@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+html{
+    background:rgb(123, 197, 221);
+    padding:3%;
+    display: flex; 
+}
+
+body{
+    position:relative;
+}
+
+img{
+    max-width: 30%;
+}
+

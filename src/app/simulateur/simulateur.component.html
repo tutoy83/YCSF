@@ -1,0 +1,58 @@
+<div class="content">
+
+    <img src="../../assets/YachtClub_v3.png">
+
+    <div class="card">
+      <div>
+        <h2>Sélection des stages</h2>
+
+        <div id="selectionStage" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+          <div class="stageItem col mb-4" *ngFor="let stage of stages.slice(0, 9)">
+            <div class="col mb-4">
+              <div class="card-body">
+                <h4 class="card-title">{{stage.nom}}</h4>
+                <p class="card-text">{{stage.prix}} €</p>
+                <div class="d-flex align-items-center buttonsQte">
+                  <button type="button" class="btn btn-primary" (click)="ajouterStage(stage)">+</button>
+                  <button type="button" class="btn btn-danger" (click)="enleverStage(stage)">-</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      <button type="button" class="btn btn-warning" (click)="reset()">reset</button>
+
+    </div>
+    
+
+    <div class="card">
+      <div id="recapitulatif">
+        <h2>Récapitulatif de la commande</h2>
+        <hr>
+        <div class="row mb-3">
+          <div class="col-sm-3 font-weight-bold">Stage</div>
+          <div class="col-sm-3 font-weight-bold">Quantité</div>
+          <div class="col-sm-3 font-weight-bold">Prix unitaire €</div>
+          <div class="col-sm-3 font-weight-bold">Prix (remise) €</div>
+        </div>
+        <div class="row mb-3" *ngFor="let ligne of recapitulatif">
+          <div class="col-sm-3">{{ligne.nom}}</div>
+          <div class="col-sm-3">{{ligne.quantite}}</div>
+          <div class="col-sm-3">{{ligne.prixUnitaire}} €</div>
+          <div class="col-sm-3">{{ligne.prixTotal}} €</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-9 font-weight-bold text-right">Total</div>
+          <div class="col-sm-3 font-weight-bold">{{total}} €</div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+
+
+  
