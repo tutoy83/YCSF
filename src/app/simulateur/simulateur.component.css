@@ -1,5 +1,4 @@
 .content{
-    background:rgb(123, 197, 221);
     max-width: 100%;
     overflow: hidden;
 }
@@ -26,7 +25,7 @@ img{
 .stageItem{
     width: 70%;
     margin: 1%;
-    background:rgba(123, 197, 221, 0.768);
+    background: linear-gradient(30deg, #00d2ff 0%, #3a47d5 100%);
     border-radius: 1rem;
     padding: .65rem .65rem 0 .55rem;
 }
@@ -38,13 +37,16 @@ img{
 .btn{
     min-width: 38px;
     min-height: 38px;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     padding:.155rem .75rem;
 }
-.btn-warning{
-    font-size: .9rem;
-    padding:.135rem .55rem;
+
+.btn-primary{
+    background: #0565cc;
+    border: 1px solid;
+    border-color: white;
 }
+
 
 .buttonsQte{
     justify-content: space-between;
@@ -56,12 +58,16 @@ img{
 }
 
 .options{
-    background: rgb(123 221 138 / 83%);
+    /* background: rgb(123 221 138 / 83%); */
+
 }
 
-#exportrecapitulatif button{
-    font-size: 1.2rem;
+.options button{
+    padding: 1% 2% 1% 2%;
 }
+
+
+
 
 #exportrecapitulatifmail{
     margin-top:5%;

@@ -19,11 +19,17 @@
       </div>
   
     </div>
-    <button type="button" class="btn btn-warning" (click)="reset()">Réinitialiser</button>
+    <hr>
+    <div class="d-flex justify-content-around options">
+      <button type="button" class="btn btn-warning" (click)="reset()">Réinitialiser</button>
+      <button type="button" class="btn btn-success" (click)="reset()">+ Passport'Voile</button>
+      <button type="button" class="btn btn-danger" (click)="reset()">+ Cotisation </button>
+
+    </div>
   </div>
   
-  <div class="commande">
-    <h2>Element stageDemande</h2>
+  <div class="card">
+    <h2>Elements stageDemande - En cours dev (80% des cas traités) </h2>
     <table class="table">
       <thead>
         <tr>
@@ -39,23 +45,30 @@
           <td>{{ stageDemande.prixRemise }} €</td>
         </tr>
       </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2"><strong>Total</strong></td>
+          <td><strong>{{ total }} €</strong></td>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
   </div>
   
 
   <div class="card">
     <div id="exportrecapitulatif">
-      <h2>Exporter récapitulatif</h2>
+      <h2>Exporter le récapitulatif (en cours de dev)</h2>
       <hr>
       <div class="d-flex justify-content-around">
-        <button type="button" class="btn btn-primary">Télécharger (bientot)</button>
-        <button type="button" class="btn btn-primary">Imprimer (bientot)</button>
+        <button type="button" class="btn btn-primary">Télécharger</button>
+        <button type="button" class="btn btn-primary">Imprimer</button>
       </div>
       <div class="d-flex justify-content-center">
         <form class="form-inline d-flex justify-content-evenly">
           <div class="form-group mb-2">
-            <label for="staticEmail2" class="sr-only">Ex. bernard@gmail.com</label>
-            <input class="form-control" type="text" placeholder="Entrer email client:">
+            <label for="staticEmail2" class="sr-only">Ex. jean.boneaud@gmail.com</label>
+            <input class="form-control" type="text" placeholder="Entrer email client: jean.boneaud@gmail.com">
           </div>
           <button type="submit" class="btn btn-success mb-2">Envoyer</button>
         </form>
