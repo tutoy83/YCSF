@@ -58,3 +58,22 @@ img{
 .options{
     background: rgb(123 221 138 / 83%);
 }
+
+#exportrecapitulatif button{
+    font-size: 1.2rem;
+}
+
+#exportrecapitulatifmail{
+    margin-top:5%;
+    justify-content: space-between;
+}
+
+.form-inline{
+    margin-top:2%;
+    border: 1px;
+}
+
+.form-group input{
+    width: 17rem;
+}
+
