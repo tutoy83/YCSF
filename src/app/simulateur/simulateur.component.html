@@ -3,6 +3,14 @@
   <div class="card">
     <div>
       <h2>Sélection des stages</h2>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="flexRadioDefault" (click)="carole()">
+        <label class="form-check-label" for="flexRadioDefault2">
+            Mode Carole
+        </label>
+      </div>
+
+    
   
       <div id="selectionStage" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
         <div class="stageItem col mb-4" *ngFor="let stage of stages">
@@ -22,15 +30,15 @@
     <hr>
     <div class="d-flex justify-content-around options">
       <button type="button" class="btn btn-warning" (click)="reset()">Réinitialiser</button>
-      <button type="button" class="btn btn-success" (click)="reset()">+ Passport'Voile</button>
-      <button type="button" class="btn btn-danger" (click)="reset()">+ Cotisation </button>
+      <button type="button" class="btn btn-success" (click)="ajouterPassport()">+ Passport'Voile</button>
+      <button type="button" class="btn btn-danger" (click)="ajouterCotis()">+ Cotisation </button>
 
     </div>
   </div>
   
   <div class="card">
-    <h2>Elements stageDemande - En cours dev (80% des cas traités) </h2>
-    <table class="table">
+    <h2>&Eacute;lements de la simulation</h2>
+    <table class="table" id="tableRecap">
       <thead>
         <tr>
           <th>Nom</th>
@@ -39,16 +47,26 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let stageDemande of stagesDemandesArr">
-          <td>{{ stageDemande.nom }}</td>
-          <td>{{ stageDemande.prixPublic }} €</td>
-          <td>{{ stageDemande.prixRemise }} €</td>
-        </tr>
+        <ng-container *ngFor="let stageDemande of stagesDemandesArr">
+          <tr>
+            <td>{{ stageDemande.nom }}</td>
+            <td>{{ stageDemande.prixPublic.toFixed(2) }} €</td>
+            <td>{{ stageDemande.prixRemise.toFixed(2) }} €</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngFor="let optionDemande of optionsDemandesArr">
+          <tr>
+            <td>{{ optionDemande.nom }}</td>
+            <td>{{ optionDemande.prixPublic.toFixed(2) }} €</td>
+            <td>{{ optionDemande.prixPublic.toFixed(2) }} €</td>
+          </tr>
+        </ng-container>
+        
       </tbody>
       <tfoot>
         <tr>
           <td colspan="2"><strong>Total</strong></td>
-          <td><strong>{{ total }} €</strong></td>
+          <td><strong>{{ total.toFixed(2) }} €</strong></td>
           <td></td>
         </tr>
       </tfoot>
@@ -58,17 +76,16 @@
 
   <div class="card">
     <div id="exportrecapitulatif">
-      <h2>Exporter le récapitulatif (en cours de dev)</h2>
+      <h2>Exporter le récapitulatif</h2>
       <hr>
       <div class="d-flex justify-content-around">
-        <button type="button" class="btn btn-primary">Télécharger</button>
-        <button type="button" class="btn btn-primary">Imprimer</button>
+        <button type="button" class="btn btn-primary" (click)="genererPDF()">Télécharger / Imprimer</button>
       </div>
       <div class="d-flex justify-content-center">
-        <form class="form-inline d-flex justify-content-evenly">
+        <form class="form-inline d-flex justify-content-evenly" (submit)="sendEmail()">
           <div class="form-group mb-2">
             <label for="staticEmail2" class="sr-only">Ex. jean.boneaud@gmail.com</label>
-            <input class="form-control" type="text" placeholder="Entrer email client: jean.boneaud@gmail.com">
+            <input class="form-control" type="text" id="mailDest" placeholder="Entrer email client: ">
           </div>
           <button type="submit" class="btn btn-success mb-2">Envoyer</button>
         </form>
