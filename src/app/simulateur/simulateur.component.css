@@ -1,0 +1,88 @@
+.content{
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.card{
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom:5%;
+
+}
+.card h2{
+    text-align: center;
+    margin-top:2%;
+    margin-bottom:2%;
+}
+.title{
+    text-align: center;
+    margin-bottom: 3%;
+}
+img{
+    margin: 0 35% 5% 35%;
+}
+
+.stageItem{
+    width: 70%;
+    margin: 1%;
+    background: linear-gradient(30deg, #00d2ff 0%, #3a47d5 100%);
+    border-radius: 1rem;
+    padding: .65rem .65rem 0 .55rem;
+}
+
+#selectionStage{
+    display: flex;
+}
+
+.btn{
+    min-width: 38px;
+    min-height: 38px;
+    font-size: 1.2rem;
+    padding:.155rem .75rem;
+}
+
+.btn-primary{
+    background: #0565cc;
+    border: 1px solid;
+    border-color: white;
+}
+
+
+.buttonsQte{
+    justify-content: space-between;
+    margin-top: 30%;
+}
+.mb-4{
+    margin-bottom: 1rem;
+    width: 241px;
+}
+
+.options{
+    /* background: rgb(123 221 138 / 83%); */
+
+}
+
+.options button{
+    padding: 1% 2% 1% 2%;
+}
+
+
+
+
+#exportrecapitulatifmail{
+    margin-top:5%;
+    justify-content: space-between;
+}
+
+.form-inline{
+    margin-top:2%;
+    border: 1px;
+}
+
+.form-group input{
+    width: 17rem;
+}
+
+.form-check-input{
+    margin-top:5px;
+}
