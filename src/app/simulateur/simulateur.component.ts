@@ -249,7 +249,7 @@ export class SimulateurComponent {
     // Add the total
     doc.setFontSize(12);
     const totalY = startY + (data.length + 1) * 10;
-    doc.text('TOTAL = ' + this.total.toFixed(2) + ' €', 130, totalY);
+    doc.text('TOTAL = ' + this.total.toFixed(2) + ' €', 155, totalY);
 
     // Add the text
     const text = "Ce document n'est pas un bon de commande, pour réaliser une inscription, merci de visiter notre site ycsixfours.com \nVous pouvez également nous contacter au 04 94 34 18 50 ou par mail ycsixfours@free.fr";
