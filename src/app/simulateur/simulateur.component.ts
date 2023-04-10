@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable'
 
 
 interface Stage {
@@ -11,6 +12,7 @@ interface StageDemande {
   nom: string;
   prixPublic: number;
   prixRemise: number;
+  remise: string;
 }
 
 interface optionDemande {
@@ -49,14 +51,17 @@ export class SimulateurComponent {
 
   optionsDemandesArr: optionDemande[] = [];
 
+  tabGood: number[] = [];
+
   ajouterStageDemande(stage: Stage): void {
     const nbStages = this.stagesDemandesArr.length;
 
-    if (nbStages < 3){
+    if (nbStages < 8){
       const stageDemande: StageDemande = {
         nom: stage.nom,
         prixPublic: stage.prix,
-        prixRemise: stage.prix
+        prixRemise: stage.prix,
+        remise: ""
       };
 
       this.stagesDemandesArr.push(stageDemande);
@@ -67,9 +72,9 @@ export class SimulateurComponent {
           }
         }
       }
-      this.totalCalc();
+      this.remiseCalc();
     }else{
-      alert("⚠️ Vous avez déjà 3 stages ");
+      alert("⚠️ Vous avez déjà 10 stages ");
     }
   }
 
@@ -80,7 +85,7 @@ export class SimulateurComponent {
     };
 
     this.optionsDemandesArr.push(optionDemande);
-    this.totalCalc();
+    this.remiseCalc();
   }
 
   ajouterCotis():void{
@@ -90,97 +95,96 @@ export class SimulateurComponent {
     };
 
     this.optionsDemandesArr.push(optionDemande);
-    this.totalCalc();
+    this.remiseCalc();
   }
 
-  totalCalc(): number {
-    this.total = 0;
+  remiseCalc(): number {
     const nbStages = this.stagesDemandesArr.length;
-  
-    if (nbStages === 0) {
-      return this.total;
-    } else if (nbStages === 1) {
-      return this.stagesDemandesArr[0].prixRemise;
-    } else if (nbStages === 2) {
-      const stage1 = this.stagesDemandesArr[0];
-      const stage2 = this.stagesDemandesArr[1];
-      const moussaillonsOuKayak = stage1.nom === 'Moussaillons' || stage1.nom === 'Kayak' || stage2.nom === 'Moussaillons' || stage2.nom === 'Kayak';
-  
-      if (moussaillonsOuKayak) {
-        if (stage1.nom !== 'Moussaillons' && stage1.nom !== 'Kayak') {
-            stage1.prixRemise = stage1.prixPublic * 0.95;
-            this.total += stage1.prixRemise;
-        } else if (stage2.nom !== 'Moussaillons' && stage2.nom !== 'Kayak') {
-            stage2.prixRemise = stage2.prixPublic * 0.95;
-            this.total += stage2.prixRemise;
-        } else {
-          this.total += stage1.prixPublic + stage2.prixPublic;
-        }
-    } else {
-        const stageAvecPrixPlusGrand = stage1.prixPublic > stage2.prixPublic ? stage1 : stage2;
-        const stageAvecPrixPlusPetit = stage1.prixPublic > stage2.prixPublic ? stage2 : stage1;
-      
-        stageAvecPrixPlusGrand.prixRemise = stageAvecPrixPlusGrand.prixPublic * 0.95;
-        this.total += stageAvecPrixPlusGrand.prixRemise;
-        this.total += stageAvecPrixPlusPetit.prixPublic;
-    }
-    
-    }
-    else if (nbStages === 3) {
-      const stage1 = this.stagesDemandesArr[0];
-      const stage2 = this.stagesDemandesArr[1];
-      const stage3 = this.stagesDemandesArr[2];
-      const moussaillonsOuKayak = stage1.nom === 'Moussaillons' || stage1.nom === 'Kayak' || stage2.nom === 'Moussaillons' || stage2.nom === 'Kayak' || stage3.nom === 'Moussaillons' || stage3.nom === 'Kayak';
-    
-      if (moussaillonsOuKayak) {
-        if (stage1.nom === 'Moussaillons' && stage2.nom === 'Moussaillons' && stage3.nom === 'Moussaillons' || stage1.nom === 'Kayak' && stage2.nom === 'Kayak' && stage3.nom === 'Kayak') {
-            //INTERDIT - INTERDIT - INTERDIT
-            this.total += stage1.prixPublic + stage2.prixPublic + stage3.prixPublic;
-        } else if ((stage1.nom === 'Moussaillons' || stage1.nom === 'Kayak') && (stage2.nom === 'Moussaillons' || stage2.nom === 'Kayak') && stage3.nom !== 'Moussaillons' && stage3.nom !== 'Kayak') {
-            //INTERDIT - INTERDIT - NORMAL  
-            stage3.prixRemise = stage3.prixPublic * 0.9;
-            this.total += stage1.prixPublic + stage2.prixPublic + stage3.prixRemise;
-        } else if ((stage1.nom === 'Moussaillons' || stage1.nom === 'Kayak') && stage2.nom !== 'Moussaillons' && stage2.nom !== 'Kayak' && (stage3.nom === 'Moussaillons' || stage3.nom === 'Kayak')) {
-            //INTERDIT - NORMAL - INTERDIT
-            stage2.prixRemise = stage2.prixPublic * 0.9;
-            this.total += stage1.prixPublic + stage2.prixRemise + stage3.prixPublic;
-        }else if ((stage1.nom === 'Moussaillons' || stage1.nom === 'Kayak') && stage2.nom !== 'Moussaillons' && stage2.nom !== 'Kayak' && stage3.nom !== 'Moussaillons' && stage3.nom !== 'Kayak') {
-            //INTERDIT - NORMAL - NORMAL
-            stage2.prixRemise = stage2.prixPublic * 0.9;
-            stage3.prixRemise = stage3.prixPublic * 0.95;
-            this.total += stage1.prixPublic + stage2.prixRemise + stage3.prixPublic;
-        } else if (stage1.nom !== 'Moussaillons' && stage1.nom !== 'Kayak' && (stage2.nom !== 'Moussaillons' && stage2.nom !== 'Kayak') && (stage3.nom === 'Moussaillons' || stage3.nom === 'Kayak')) {
-            //NORMAL - NORMAL - INTERDIT
-            stage1.prixRemise = stage1.prixPublic * 0.9;
-            stage2.prixRemise = stage2.prixPublic * 0.95;
-            this.total += stage1.prixRemise + stage2.prixRemise + stage3.prixPublic;
-        
-        } else if (stage1.nom !== 'Moussaillons' && stage1.nom !== 'Kayak' && (stage2.nom === 'Moussaillons' || stage2.nom === 'Kayak') && (stage3.nom === 'Moussaillons' || stage3.nom === 'Kayak')) {
-            //NORMAL - INTERDIT - INTERDIT
-            stage1.prixRemise = stage1.prixPublic * 0.9;
-            this.total += stage1.prixRemise + stage2.prixPublic + stage3.prixPublic;
-        }
-        } else if (stage1.nom !== 'Moussaillons' && stage1.nom !== 'Kayak' && (stage2.nom === 'Moussaillons' || stage2.nom === 'Kayak') && stage3.nom !== 'Moussaillons' && stage3.nom !== 'Kayak') {
-          //NORMAL - INTERDIT - NORMAL                                                       TO DOUBLE CHECK
-          stage1.prixRemise = stage1.prixPublic * 0.9;
-          stage3.prixRemise = stage3.prixPublic * 0.95;
-          this.total += stage1.prixRemise + stage2.prixPublic + stage3.prixRemise;
-      
-      } else {
 
-          const stagesSortedByPrice = this.stagesDemandesArr.sort((a, b) => b.prixPublic - a.prixPublic);
-          stagesSortedByPrice[0].prixRemise = stagesSortedByPrice[0].prixPublic * 0.9;
-          stagesSortedByPrice[1].prixRemise = stagesSortedByPrice[1].prixPublic * 0.95;
-          this.total += stagesSortedByPrice[0].prixRemise + stagesSortedByPrice[1].prixRemise + stagesSortedByPrice[2].prixPublic;
+    if (nbStages === 0) {
+      return 0;
+    } else if (nbStages === 2) {
+      this.goodFinder();
+      const stagesSortedByPrice = this.stagesDemandesArr.sort((a, b) => a.prixPublic - b.prixPublic);
+      if(this.tabGood.length === 1){
+        this.stagesDemandesArr[this.tabGood[0]].prixRemise = this.stagesDemandesArr[this.tabGood[0]].prixPublic * 0.95;
+        this.stagesDemandesArr[this.tabGood[0]].remise = " - 5%";
+      }
+      if(this.tabGood.length === 2){
+        //Si les deux ne sont pas interdits, appliquer reduc sur le plus cher
+        this.stagesDemandesArr[this.tabGood[1]].prixRemise = this.stagesDemandesArr[this.tabGood[1]].prixPublic * 0.95;
+        this.stagesDemandesArr[this.tabGood[1]].remise = " - 5%";
+      }
+
+    }
+    else if (nbStages >= 3) {
+      this.goodFinder();
+      this.totalCalc();
+      const stagesSortedByPrice = this.stagesDemandesArr.sort((a, b) => a.prixPublic - b.prixPublic);
+      if(this.tabGood.length === 1){
+        this.stagesDemandesArr[this.tabGood[0]].prixRemise = this.stagesDemandesArr[this.tabGood[0]].prixPublic * 0.9;
+        this.stagesDemandesArr[this.tabGood[0]].remise = " - 10%";
+
+      }else{
+        if(this.tabGood.length === nbStages){
+          this.stagesDemandesArr[this.tabGood[1]].prixRemise = this.stagesDemandesArr[this.tabGood[1]].prixPublic*0.95;
+          this.stagesDemandesArr[this.tabGood[1]].remise = " - 5%";
+          for(let j=1; this.tabGood.length; j++){
+            this.stagesDemandesArr[this.tabGood[j]].prixRemise =this.stagesDemandesArr[this.tabGood[j]].prixPublic*0.9;
+            this.stagesDemandesArr[this.tabGood[j]].remise = " - 10%";
+          }
+        }else{
+          if(this.tabGood.length === nbStages-2){
+              for(let j=0; this.tabGood.length; j++){
+                this.stagesDemandesArr[this.tabGood[j]].prixRemise =this.stagesDemandesArr[this.tabGood[j]].prixPublic*0.9;
+                this.stagesDemandesArr[this.tabGood[j]].remise = " - 10%";
+              }
+          }else{
+            this.stagesDemandesArr[this.tabGood[0]].prixRemise =this.stagesDemandesArr[this.tabGood[0]].prixPublic*0.95;
+            this.stagesDemandesArr[this.tabGood[0]].remise = " - 5%";
+
+            for(let j=1; this.tabGood.length; j++){
+              this.stagesDemandesArr[this.tabGood[j]].prixRemise =this.stagesDemandesArr[this.tabGood[j]].prixPublic*0.9;
+              this.stagesDemandesArr[this.tabGood[j]].remise = " - 10%";
+            }
+          }
+
+
+
+        }
+
       }
   }
 
-  for (let i = 0; i < this.optionsDemandesArr.length; i++) {
-    this.total += this.optionsDemandesArr[i].prixPublic; // Ajoute le prixPublic de l'élément i à la variable total
+    console.log("Fin total", this.stagesDemandesArr);
+    this.totalCalc();
+    return this.total;
   }
 
-    console.log("Fin total", this.stagesDemandesArr);
-    return this.total;
+  totalCalc(): any{
+    this.total = 0;
+    //GESTION STAGE
+    for (let i = 0; i < this.stagesDemandesArr.length; i++) {
+      this.total += this.stagesDemandesArr[i].prixRemise; // Ajoute le prixPublic de l'élément i à la variable total
+    }
+
+    //GESTION OPTION
+    for (let i = 0; i < this.optionsDemandesArr.length; i++) {
+      this.total += this.optionsDemandesArr[i].prixPublic; // Ajoute le prixPublic de l'élément i à la variable total
+    }
+  }
+
+  goodFinder(): void {
+    const stagesSortedByPrice = this.stagesDemandesArr.sort((a, b) => a.prixPublic - b.prixPublic);
+    this.tabGood= [];
+    for (let i = 0; i < this.stagesDemandesArr.length; i++) {
+      const stage = this.stagesDemandesArr[i];
+      if (stage.nom !== 'Moussaillons' && stage.nom !== 'Kayak') {
+        this.tabGood.push(i);
+      }
+    }
+    console.log("Indice dans tabStages des choses autorisees:", this.tabGood);
+    // Do something with tabGood here
   }
 
   @ViewChild('tableRecap') table!: ElementRef;
@@ -189,65 +193,76 @@ export class SimulateurComponent {
   sendEmail() {
     const email = (document.getElementById('mailDest') as HTMLInputElement).value;
     const subject = 'Recapitulatif de la commande';
-    let body = 'Bonjour,\nVous trouverez ci-dessous les informations demandees sur les stages. Pour realiser une inscription, merci de nous recontacter. \n Cordialement, \n\n';
+    let body = 'Bonjour,\n\nVous trouverez ci-dessous les informations demandees sur les stages. Pour realiser une inscription, merci de nous recontacter. \n Cordialement, \n\n';
     let totalPrinted = '\nTOTAL = ' + this.total + ' euros'
     for (const stageDemande of this.stagesDemandesArr) {
-      body += `- ${stageDemande.nom} au prix de : ${stageDemande.prixRemise} euros\n`;
+      body += `- ${stageDemande.nom} ${stageDemande.remise}, soit ${stageDemande.prixRemise} euros\n`;
     }
-    
+
     for (const optionDemande of this.optionsDemandesArr) {
-      body += `- ${optionDemande.nom} au prix de : ${optionDemande.prixPublic} euros\n`;
+      body += `- ${optionDemande.nom}, soit ${optionDemande.prixPublic} euros\n`;
     }
-    
+
     const mailtoLink = 'mailto:' + email + '?subject=' + subject + '&body=' + encodeURIComponent(body) + totalPrinted;
     window.location.href = mailtoLink;
   }
-  
-  
-genererPDF(): void {
-  const doc = new jsPDF();
-  const imgWidth = 74;
-  const imgHeight = 30;
-  const margin = doc.internal.pageSize.getWidth() / 2 - imgWidth / 2;
 
-  // Ajouter l'image centrée
-  doc.addImage('../../assets/YachtClub_v3.png', 'PNG', margin, 10, imgWidth, imgHeight);
+  genererPDF(): void {
+    const doc = new jsPDF();
 
-  // Ajouter le titre
-  const imgProperties = doc.getImageProperties('../../assets/YachtClub_v3.png');
-  const titleY = 60;
-  doc.setFontSize(22);
-  doc.text('Récapitulatif des stages', doc.internal.pageSize.getWidth() / 2, titleY, { align: 'center' });
+    const imgWidth = 74;
+    const imgHeight = 30;
+    const margin = doc.internal.pageSize.getWidth() / 2 - imgWidth / 2;
 
-  doc.setFontSize(15);
+    // Add the image centered
+    doc.addImage('../../assets/YachtClub_v3.png', 'PNG', margin, 10, imgWidth, imgHeight);
 
-  // Ajouter le corps
-  let body = '';
-  this.stagesDemandesArr.forEach((stage) => {
-    body += '- ' + stage.nom + ': ' + stage.prixRemise.toFixed(2) + '€\n\n';
-  });
+    // Add the title
+    const imgProperties = doc.getImageProperties('../../assets/YachtClub_v3.png');
+    const titleY = 60;
+    doc.setFontSize(22);
+    doc.text('Récapitulatif des stages', doc.internal.pageSize.getWidth() / 2, titleY, { align: 'center' });
 
-  this.optionsDemandesArr.forEach((option) => {
-    body += '- ' + option.nom + ': ' + option.prixPublic.toFixed(2) + '€\n\n';
-  });
+    // Add the table
+    const columns = ['Nom de l\'activité', 'Réduction', 'Prix'];
+    const data = <any>[];
 
-  doc.text(body, 15, titleY + 20);
+    this.stagesDemandesArr.forEach((stage) => {
+      data.push([stage.nom, stage.remise, stage.prixRemise.toFixed(2)]);
+    });
 
+    this.optionsDemandesArr.forEach((option) => {
+      data.push([option.nom, '', option.prixPublic.toFixed(2)]);
+    });
 
-  // Ajouter le texte
-  doc.setFontSize(14);
-  const text = "Tous les tarifs incluent les éventuelles remises.\nCe document n'est pas un bon de commande, pour réaliser une inscription, merci de nous contacter au 04 94 34 18 50.";
-  const maxWidth = 170; // adjust the width to fit the text in the PDF
+    const startY = titleY + 20;
 
-  const lines = doc.splitTextToSize(text, maxWidth);
-  doc.text(lines, 15, 250); 
-  
+    autoTable(doc, {
+      headStyles: { fillColor: [46, 42, 91] },
+      head: [columns],
+      body: data,
+      startY: startY,
+      theme: 'grid',
 
-  const now = new Date();
-  const fileName = `recapitulatif_${now.toLocaleString('fr-FR', { timeZone: 'Europe/Paris', dateStyle: 'short', timeStyle: 'short' }).replace(/[/:\s]/g, '-')}.pdf`;
-  doc.save(fileName);
-  
+    });
+
+    // Add the total
+    doc.setFontSize(12);
+    const totalY = startY + (data.length + 1) * 10;
+    doc.text('TOTAL = ' + this.total.toFixed(2) + ' €', 130, totalY);
+
+    // Add the text
+    const text = "Ce document n'est pas un bon de commande, pour réaliser une inscription, merci de visiter notre site ycsixfours.com \nVous pouvez également nous contacter au 04 94 34 18 50 ou par mail ycsixfours@free.fr";
+    const maxWidth = 180; // adjust the width to fit the text in the PDF
+    const lines = doc.splitTextToSize(text, maxWidth);
+    const textY = totalY + 30;
+    doc.text(lines, 15, textY);
+
+    const now = new Date();
+    const fileName = `recapitulatif_${now.toLocaleString('fr-FR', { timeZone: 'Europe/Paris', dateStyle: 'short', timeStyle: 'short' }).replace(/[/:\s]/g, '-')}.pdf`;
+    doc.save(fileName);
   }
+
 
 
   reset(): void{
@@ -255,26 +270,27 @@ genererPDF(): void {
     this.optionsDemandesArr = [];
     this.total = 0;
   }
-  
+
   carole(): void {
     let doc = document.getElementsByClassName('stageItem') as HTMLCollectionOf<HTMLElement>;
     let btnDoc = document.getElementsByClassName('btn-primary') as HTMLCollectionOf<HTMLElement>;
 
     this.caroleStatus = !this.caroleStatus;
-  
+
     for (let i = 0; i < doc.length; i++) {
       if (this.caroleStatus) {
-        doc[i].style.background = "linear-gradient(30deg, #ff3600, #f07406, rgb(230 255 0), #008058 )";
+        document.body.style.background = "linear-gradient(90deg, rgba(232,106,2,1) 16%, rgba(246,231,7,0.9979342078628326) 53%, rgba(14,153,4,1) 91%)";
+        doc[i].style.background = "linear-gradient(to right, #f83600 0%, #f9d423 100%)";
         btnDoc[i].style.background = "#05cc4bc9";
 
       } else {
-        doc[i].style.background = "linear-gradient(30deg, #00d2ff 0%, #3a47d5 100%)";
+        document.body.style.background = "linear-gradient(90deg, #1CB5E0 0%, #000851 100%)";
+        doc[i].style.background = "linear-gradient(30deg, #00d2ff 0%, #3a47d5 100%";
         btnDoc[i].style.background = "#0565cc";
 
       }
     }
   }
-  
+
 }
-  
-  
+

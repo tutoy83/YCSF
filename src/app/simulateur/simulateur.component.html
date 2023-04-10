@@ -10,8 +10,8 @@
         </label>
       </div>
 
-    
-  
+
+
       <div id="selectionStage" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
         <div class="stageItem col mb-4" *ngFor="let stage of stages">
           <div class="col mb-4">
@@ -25,7 +25,7 @@
           </div>
         </div>
       </div>
-  
+
     </div>
     <hr>
     <div class="d-flex justify-content-around options">
@@ -35,13 +35,14 @@
 
     </div>
   </div>
-  
+
   <div class="card">
     <h2>&Eacute;lements de la simulation</h2>
     <table class="table" id="tableRecap">
       <thead>
         <tr>
           <th>Nom</th>
+          <th>Réduction</th>
           <th>Prix public</th>
           <th>Prix remisé</th>
         </tr>
@@ -50,29 +51,31 @@
         <ng-container *ngFor="let stageDemande of stagesDemandesArr">
           <tr>
             <td>{{ stageDemande.nom }}</td>
+            <td>{{ stageDemande.remise }}</td>
             <td>{{ stageDemande.prixPublic.toFixed(2) }} €</td>
-            <td>{{ stageDemande.prixRemise.toFixed(2) }} €</td>
+            <td [ngStyle]="{'color': (stageDemande.prixRemise !== stageDemande.prixPublic && stageDemande.nom !=='Kayak' && stageDemande.nom !=='Moussaillons') ? 'green' : 'black'}">{{ stageDemande.prixRemise.toFixed(2) }} €</td>
           </tr>
         </ng-container>
         <ng-container *ngFor="let optionDemande of optionsDemandesArr">
           <tr>
             <td>{{ optionDemande.nom }}</td>
+            <td></td>
             <td>{{ optionDemande.prixPublic.toFixed(2) }} €</td>
             <td>{{ optionDemande.prixPublic.toFixed(2) }} €</td>
           </tr>
         </ng-container>
-        
+
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="2"><strong>Total</strong></td>
+          <td colspan="3"><strong>Total</strong></td>
           <td><strong>{{ total.toFixed(2) }} €</strong></td>
           <td></td>
         </tr>
       </tfoot>
     </table>
   </div>
-  
+
 
   <div class="card">
     <div id="exportrecapitulatif">
@@ -92,4 +95,4 @@
       </div>
     </div>
   </div>
-</div>  
+</div>
