@@ -192,7 +192,7 @@ export class SimulateurComponent {
 
   sendEmail() {
     const email = (document.getElementById('mailDest') as HTMLInputElement).value;
-    const subject = 'Recapitulatif de la commande';
+    const subject = 'Devis stages';
     let body = 'Bonjour,\n\nVous trouverez ci-dessous les informations demandees sur les stages. Pour realiser une inscription, merci de nous recontacter. \n Cordialement, \n\n';
     let totalPrinted = '\nTOTAL = ' + this.total + ' euros'
     for (const stageDemande of this.stagesDemandesArr) {
@@ -221,18 +221,18 @@ export class SimulateurComponent {
     const imgProperties = doc.getImageProperties('../../assets/YachtClub_v3.png');
     const titleY = 60;
     doc.setFontSize(22);
-    doc.text('Récapitulatif des stages', doc.internal.pageSize.getWidth() / 2, titleY, { align: 'center' });
+    doc.text('Devis', doc.internal.pageSize.getWidth() / 2, titleY, { align: 'center' });
 
     // Add the table
-    const columns = ['Nom de l\'activité', 'Réduction', 'Prix'];
+    const columns = ['Intitulé', 'Prix brut', 'Réduction', 'Prix remisé'];
     const data = <any>[];
 
     this.stagesDemandesArr.forEach((stage) => {
-      data.push([stage.nom, stage.remise, stage.prixRemise.toFixed(2)]);
+      data.push([stage.nom, stage.prixPublic.toFixed(2), stage.remise, stage.prixRemise.toFixed(2)]);
     });
 
     this.optionsDemandesArr.forEach((option) => {
-      data.push([option.nom, '', option.prixPublic.toFixed(2)]);
+      data.push([option.nom, option.prixPublic.toFixed(2), '', option.prixPublic.toFixed(2)]);
     });
 
     const startY = titleY + 20;
