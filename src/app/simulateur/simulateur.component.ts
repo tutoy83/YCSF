@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
+import { CommonModule } from '@angular/common';
 
 
 interface Stage {
@@ -127,19 +128,24 @@ export class SimulateurComponent {
 
       }else{
         if(this.tabGood.length === nbStages){
+          console.log("TEST1");
           this.stagesDemandesArr[this.tabGood[1]].prixRemise = this.stagesDemandesArr[this.tabGood[1]].prixPublic*0.95;
           this.stagesDemandesArr[this.tabGood[1]].remise = " - 5%";
-          for(let j=1; this.tabGood.length; j++){
+          for(let j=2; this.tabGood.length; j++){
             this.stagesDemandesArr[this.tabGood[j]].prixRemise =this.stagesDemandesArr[this.tabGood[j]].prixPublic*0.9;
             this.stagesDemandesArr[this.tabGood[j]].remise = " - 10%";
           }
         }else{
           if(this.tabGood.length === nbStages-2){
+            console.log("TEST2");
+
               for(let j=0; this.tabGood.length; j++){
                 this.stagesDemandesArr[this.tabGood[j]].prixRemise =this.stagesDemandesArr[this.tabGood[j]].prixPublic*0.9;
                 this.stagesDemandesArr[this.tabGood[j]].remise = " - 10%";
               }
           }else{
+            console.log("TEST3");
+
             this.stagesDemandesArr[this.tabGood[0]].prixRemise =this.stagesDemandesArr[this.tabGood[0]].prixPublic*0.95;
             this.stagesDemandesArr[this.tabGood[0]].remise = " - 5%";
 
