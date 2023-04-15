@@ -57,8 +57,8 @@
             <td>{{ stageDemande.prixPublic.toFixed(2) }} €</td>
             <td [ngStyle]="{'color': (stageDemande.prixRemise !== stageDemande.prixPublic && stageDemande.nom !=='Kayak' && stageDemande.nom !=='Moussaillons') ? 'green' : 'black'}">{{ stageDemande.prixRemise.toFixed(2) }} €</td>
             <td class="d-flex justify-x3-between options">
-              <button class="btn btn-primary" (click)="editStage(stageDemande)">Prix</button>
-              <button class="btn btn-primary" (click)="editStageDiscount(stageDemande)">Remise</button>
+              <button class="btn btn-primary edit" (click)="editStage(stageDemande)">Prix</button>
+              <button class="btn btn-primary edit" (click)="editStageDiscount(stageDemande)">Remise</button>
             </td>
           </tr>
         </ng-container>

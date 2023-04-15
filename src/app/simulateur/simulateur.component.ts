@@ -112,8 +112,12 @@ export class SimulateurComponent {
   editStageDiscount(stage: any) {
     const newDiscount = prompt('% remise à appliquer:', stage.prixRemise);
     if (newDiscount !== null) {
-      stage.prixRemise = stage.prixPublic*(1-parseFloat(newDiscount)/100);
-      stage.remise = " - " + parseFloat(newDiscount) + " %";
+      if(parseFloat(newDiscount)<=100){
+        stage.prixRemise = stage.prixPublic*(1-parseFloat(newDiscount)/100);
+        stage.remise = " - " + parseFloat(newDiscount) + " %";
+      }else{
+        alert("⚠️ Erreur: remise max 100%");
+      }
 
     }
 

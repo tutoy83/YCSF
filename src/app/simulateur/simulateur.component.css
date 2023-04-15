@@ -47,6 +47,9 @@ img{
     border-color: white;
 }
 
+.edit{
+  min-width: 30%;
+}
 
 .buttonsQte{
     justify-content: space-between;
