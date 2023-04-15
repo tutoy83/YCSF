@@ -99,6 +99,28 @@ export class SimulateurComponent {
     this.remiseCalc();
   }
 
+  editStage(stage: any) {
+    const newPrice = prompt('Prix (avec remise) à appliquer:', stage.prixRemise);
+    if (newPrice !== null) {
+      stage.prixRemise = parseFloat(newPrice);
+    }
+
+        this.totalCalc();
+
+  }
+
+  editStageDiscount(stage: any) {
+    const newDiscount = prompt('% remise à appliquer:', stage.prixRemise);
+    if (newDiscount !== null) {
+      stage.prixRemise = stage.prixPublic*(1-parseFloat(newDiscount)/100);
+      stage.remise = " - " + parseFloat(newDiscount) + " %";
+
+    }
+
+    this.totalCalc();
+
+  }
+
   remiseCalc(): number {
     const nbStages = this.stagesDemandesArr.length;
 
