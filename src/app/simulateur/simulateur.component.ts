@@ -123,6 +123,7 @@ export class SimulateurComponent {
       this.totalCalc();
       const stagesSortedByPrice = this.stagesDemandesArr.sort((a, b) => a.prixPublic - b.prixPublic);
       if(this.tabGood.length === 1){
+        console.log("TEST0");
         this.stagesDemandesArr[this.tabGood[0]].prixRemise = this.stagesDemandesArr[this.tabGood[0]].prixPublic * 0.9;
         this.stagesDemandesArr[this.tabGood[0]].remise = " - 10%";
 
