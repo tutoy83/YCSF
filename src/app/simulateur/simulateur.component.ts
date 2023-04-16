@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
 import { CommonModule } from '@angular/common';
+import * as XLSX from 'xlsx';
 
 
 interface Stage {
@@ -103,9 +104,10 @@ export class SimulateurComponent {
     const newPrice = prompt('Prix (avec remise) à appliquer:', stage.prixRemise);
     if (newPrice !== null) {
       stage.prixRemise = parseFloat(newPrice);
+      stage.remise = '- ' + (100-(parseFloat(newPrice)*100/stage.prixPublic)).toFixed(1)+' %';
     }
 
-        this.totalCalc();
+    this.totalCalc();
 
   }
 
@@ -164,14 +166,12 @@ export class SimulateurComponent {
           }
         }else{
           if(this.tabGood.length === nbStages-2){
-            console.log("TEST2");
 
               for(let j=0; this.tabGood.length; j++){
                 this.stagesDemandesArr[this.tabGood[j]].prixRemise =this.stagesDemandesArr[this.tabGood[j]].prixPublic*0.9;
                 this.stagesDemandesArr[this.tabGood[j]].remise = " - 10%";
               }
           }else{
-            console.log("TEST3");
 
             this.stagesDemandesArr[this.tabGood[0]].prixRemise =this.stagesDemandesArr[this.tabGood[0]].prixPublic*0.95;
             this.stagesDemandesArr[this.tabGood[0]].remise = " - 5%";
@@ -226,17 +226,18 @@ export class SimulateurComponent {
   sendEmail() {
     const email = (document.getElementById('mailDest') as HTMLInputElement).value;
     const subject = 'Devis stages';
-    let body = 'Bonjour,\n\nVous trouverez ci-dessous les informations demandees sur les stages. Pour realiser une inscription, merci de nous recontacter. \n Cordialement, \n\n';
-    let totalPrinted = '\nTOTAL = ' + this.total + ' euros'
+    let body = 'Bonjour,\n\nVous trouverez ci-dessous les informations demandees sur les stages:\n\n';
+    let inscriptionText = 'Pour realiser une inscription, merci de nous recontacter. \nCordialement, \n\n';
+    let totalPrinted = '\n\nTOTAL = ' + this.total.toFixed(2) + ' euros\n'
     for (const stageDemande of this.stagesDemandesArr) {
-      body += `- ${stageDemande.nom} ${stageDemande.remise}, soit ${stageDemande.prixRemise} euros\n`;
+      body += `- ${stageDemande.nom} ${stageDemande.remise}, soit ${stageDemande.prixRemise.toFixed(2)} euros\n`;
     }
 
     for (const optionDemande of this.optionsDemandesArr) {
       body += `- ${optionDemande.nom}, soit ${optionDemande.prixPublic} euros\n`;
     }
 
-    const mailtoLink = 'mailto:' + email + '?subject=' + subject + '&body=' + encodeURIComponent(body) + totalPrinted;
+    const mailtoLink = 'mailto:' + email + '?subject=' + subject + '&body=' + encodeURIComponent(body) + totalPrinted + inscriptionText;
     window.location.href = mailtoLink;
   }
 
@@ -296,6 +297,33 @@ export class SimulateurComponent {
     doc.save(fileName);
   }
 
+  genererExcel(): void {
+    // Create a workbook
+    const workbook = XLSX.utils.book_new();
+
+    // Create a worksheet
+    const worksheet = XLSX.utils.json_to_sheet([
+      // Add the header row
+      ['Intitulé', 'Prix brut', 'Réduction', 'Prix remisé'],
+
+      // STAGES
+
+      ...this.stagesDemandesArr.map(stage => [stage.nom, stage.prixPublic.toFixed(2), stage.remise, stage.prixRemise.toFixed(2)]),
+
+      // OPTIONS
+      ...this.optionsDemandesArr.map(option => [option.nom, option.prixPublic.toFixed(2), '', option.prixPublic.toFixed(2)]),
+
+      // Ajouter ligne total
+      ['TOTAL', '', '', this.total.toFixed(2)]
+    ]);
+
+    // Add the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Devis');
+
+    // Save the workbook as a file
+    const fileName = `recapitulatif_Stages.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+  }
 
 
   reset(): void{
@@ -307,22 +335,32 @@ export class SimulateurComponent {
   carole(): void {
     let doc = document.getElementsByClassName('stageItem') as HTMLCollectionOf<HTMLElement>;
     let btnDoc = document.getElementsByClassName('btn-primary') as HTMLCollectionOf<HTMLElement>;
+    let totalDoc = document.getElementsByClassName('total') as HTMLCollectionOf<HTMLElement>;
 
     this.caroleStatus = !this.caroleStatus;
 
-    for (let i = 0; i < doc.length; i++) {
       if (this.caroleStatus) {
         document.body.style.background = "linear-gradient(90deg, rgba(232,106,2,1) 16%, rgba(246,231,7,0.9979342078628326) 53%, rgba(14,153,4,1) 91%)";
-        doc[i].style.background = "linear-gradient(to right, #f83600 0%, #f9d423 100%)";
-        btnDoc[i].style.background = "#05cc4bc9";
+
+        for (let i = 0; i < doc.length; i++) {
+          doc[i].style.background = "linear-gradient(to right, #f83600 0%, #f9d423 100%)";
+          btnDoc[i].style.background = "#05cc4bc9";
+        }
+
+        totalDoc[0].style.background = "linear-gradient(90deg, rgb(232, 106, 2) 16%, rgba(246, 231, 7, 0.996) 53%, rgb(14, 153, 4) 91%)";
 
       } else {
         document.body.style.background = "linear-gradient(90deg, #1CB5E0 0%, #000851 100%)";
-        doc[i].style.background = "linear-gradient(30deg, #00d2ff 0%, #3a47d5 100%";
-        btnDoc[i].style.background = "#0565cc";
+
+        for (let i = 0; i < doc.length; i++) {
+          doc[i].style.background = "linear-gradient(30deg, #00d2ff 0%, #3a47d5 100%";
+          btnDoc[i].style.background = "#0565cc";
+        }
+        totalDoc[0].style.background = "lightblue";
+
 
       }
-    }
+
   }
 
 }

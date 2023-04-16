@@ -29,7 +29,7 @@
     </div>
     <hr>
     <div class="d-flex justify-content-around options">
-      <button type="button" class="btn btn-warning" (click)="reset()">Réinitialiser</button>
+      <button type="button" class="btn btn-warning" (click)="reset()">Reset</button>
       <button type="button" class="btn btn-success" (click)="ajouterPassport()">+ Passport'Voile</button>
       <button type="button" class="btn btn-danger" (click)="ajouterCotis()">+ Cotisation </button>
 
@@ -56,7 +56,7 @@
             <td>{{ stageDemande.remise }}</td>
             <td>{{ stageDemande.prixPublic.toFixed(2) }} €</td>
             <td [ngStyle]="{'color': (stageDemande.prixRemise !== stageDemande.prixPublic && stageDemande.nom !=='Kayak' && stageDemande.nom !=='Moussaillons') ? 'green' : 'black'}">{{ stageDemande.prixRemise.toFixed(2) }} €</td>
-            <td class="d-flex justify-x3-between options">
+            <td class="d-flex justify-x2-between options">
               <button class="btn btn-primary edit" (click)="editStage(stageDemande)">Prix</button>
               <button class="btn btn-primary edit" (click)="editStageDiscount(stageDemande)">Remise</button>
             </td>
@@ -68,19 +68,22 @@
             <td></td>
             <td>{{ optionDemande.prixPublic.toFixed(2) }} €</td>
             <td>{{ optionDemande.prixPublic.toFixed(2) }} €</td>
+            <td></td>
 
           </tr>
         </ng-container>
 
       </tbody>
       <tfoot>
-        <tr>
+        <tr class="total">
           <td colspan="3"><strong>Total</strong></td>
           <td><strong>{{ total.toFixed(2) }} €</strong></td>
           <td></td>
         </tr>
       </tfoot>
     </table>
+
+    <p class="mt-5">🔄 Remarque: après une édition manuelle des prix, rafraichissez la page avant de réaliser une nouvelle simulation.</p>
   </div>
 
 
@@ -90,6 +93,7 @@
       <hr>
       <div class="d-flex justify-content-around">
         <button type="button" class="btn btn-primary" (click)="genererPDF()">Télécharger / Imprimer</button>
+        <button type="button" class="btn btn-primary" (click)="genererExcel()">Télécharger Excel</button>
       </div>
       <div class="d-flex justify-content-center">
         <form class="form-inline d-flex justify-content-evenly" (submit)="sendEmail()">
