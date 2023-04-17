@@ -94,3 +94,21 @@ img{
 .total{
   background: lightblue;
 }
+
+#spot-data{
+  width: 40% !important;
+}
+
+.webcam{
+  width: 140px;
+  margin:0;
+}
+
+#webcam img{
+  max-width: 90% !important;
+  margin: 5% 25% 5% 25%;
+}
+
+hr{
+  border:1px solid rgb(0 0 0 / 29%);
+}

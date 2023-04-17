@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 html{
     padding:3%;
-    display: flex; 
+    display: flex;
 }
 
 body{
@@ -13,4 +13,3 @@ body{
 img{
     max-width: 30%;
 }
-
