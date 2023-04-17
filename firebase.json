@@ -11,17 +11,6 @@
         "source": "**",
         "destination": "/index.html"
       }
-    ],
-    "headers": [
-      {
-        "source": "/meteo/**",
-        "headers": [
-          {
-            "key": "Content-Security-Policy",
-            "value": "upgrade-insecure-requests"
-          }
-        ]
-      }
     ]
   }
 }
