@@ -243,6 +243,7 @@ export class SimulateurComponent {
 
   genererPDF(): void {
     const doc = new jsPDF();
+    const clientDest = (document.getElementById('clientDest') as HTMLInputElement).value;
 
     const imgWidth = 74;
     const imgHeight = 30;
@@ -257,6 +258,21 @@ export class SimulateurComponent {
     doc.setFontSize(22);
     doc.text('Devis', doc.internal.pageSize.getWidth() / 2, titleY, { align: 'center' });
 
+    // Add the date
+    const nowPDF = new Date();
+    const nowPDFDateFormated = nowPDF.toLocaleString('fr-FR', { timeZone: 'Europe/Paris', dateStyle: 'short', timeStyle: 'short' }).slice(0,10);
+    const detailsY = titleY + 20;
+    doc.setFontSize(12);
+    doc.text('Fait à Six-Fours, le '+nowPDFDateFormated, doc.internal.pageSize.getWidth()-15, detailsY, { align: 'right' });
+
+    // Add the client
+    let clientY = 0;
+    if(clientDest!==''){
+      clientY = detailsY + 20;
+      doc.text('Stagiaire : ' + clientDest , 15, clientY, { align: 'left' });
+
+    }
+
     // Add the table
     const columns = ['Intitulé', 'Prix brut', 'Réduction', 'Prix remisé'];
     const data = <any>[];
@@ -269,7 +285,7 @@ export class SimulateurComponent {
       data.push([option.nom, option.prixPublic.toFixed(2), '', option.prixPublic.toFixed(2)]);
     });
 
-    const startY = titleY + 20;
+    const startY = clientY + 10;
 
     autoTable(doc, {
       headStyles: { fillColor: [46, 42, 91] },
