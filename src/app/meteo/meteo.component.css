@@ -40,7 +40,7 @@ width: 40% !important;
 
 @media only screen and (max-device-width: 480px){
   #webcam img{
-    object-fit: contain;
+    object-position: 40% 57%; /* adjust values as needed */
   }
 
 }
