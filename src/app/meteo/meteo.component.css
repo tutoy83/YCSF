@@ -19,8 +19,8 @@
   margin-bottom: 3%;
 }
 
-img{
-  width: 70%;
+.logo{
+  width: 90%;
   margin: 0 35% 5% 35%;
 }
 
@@ -28,16 +28,19 @@ img{
 width: 40% !important;
 }
 
-.webcam{
-width: 140px;
-margin:0;
+#webcam{
+  width: 100%;
+  overflow:hidden;
+  max-height: 95vh;
+}
+#webcam img{
+  min-width: 120%;
+  object-fit: none;
+  object-position: 20% 130%; /* adjust values as needed */
 }
 
-#webcam img{
-max-width: 90% !important;
-margin: 5% 25% 5% 25%;
-}
+
 
 hr{
-border:1px solid rgb(0 0 0 / 29%);
+  border:1px solid rgb(0 0 0 / 29%);
 }
