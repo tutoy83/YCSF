@@ -32,14 +32,14 @@ width: 40% !important;
   width: 100%;
   }
 
-#webcam img{
+#webcam iframe{
   min-width: 100%;
   object-fit: none;
   object-position: 10% 150%; /* adjust values as needed */
 }
 
 @media only screen and (max-device-width: 480px){
-  #webcam img{
+  #webcam iframe{
     object-position: 40% 57%; /* adjust values as needed */
   }
 
