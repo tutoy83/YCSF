@@ -226,18 +226,10 @@ export class SimulateurComponent {
   sendEmail() {
     const email = (document.getElementById('mailDest') as HTMLInputElement).value;
     const subject = 'Devis stages';
-    let body = 'Bonjour,\n\nVous trouverez ci-joint les informations demandees sur les stages.\n\n';
-    let inscriptionText = 'Pour realiser une inscription, vous pouvez remplir les documents sur notre site http://ycsixfours.com/les-activites/stages-de-voile/ et nous les transmettre par mail.\nNous restons évidemment à votre disposition pour toute question.\n\nCordialement, \n\n';
-    let totalPrinted = '\n\nTOTAL = ' + this.total.toFixed(2) + ' euros\n'
-    for (const stageDemande of this.stagesDemandesArr) {
-      body += `- ${stageDemande.nom} ${stageDemande.remise}, soit ${stageDemande.prixRemise.toFixed(2)} euros\n`;
-    }
+    let body = 'Bonjour,\n\nComme convenu, vous trouverez ci-joint les informations tarifaires sur les stages.\n\n';
+    let inscriptionText = 'Pour realiser une inscription, vous pouvez télécharger les documents accessibles sur notre site http://ycsixfours.com/les-activites/stages-de-voile/ et nous les transmettre par mail.\n\nNous restons évidemment à votre disposition pour toute question.\n\nCordialement, \n\n';
 
-    for (const optionDemande of this.optionsDemandesArr) {
-      body += `- ${optionDemande.nom}, soit ${optionDemande.prixPublic} euros\n`;
-    }
-
-    const mailtoLink = 'mailto:' + email + '?subject=' + subject + '&body=' + encodeURIComponent(body) + totalPrinted + inscriptionText;
+    const mailtoLink = 'mailto:' + email + '?subject=' + subject + '&body=' + encodeURIComponent(body) + encodeURIComponent(inscriptionText);
     window.location.href = mailtoLink;
   }
 
@@ -305,7 +297,7 @@ export class SimulateurComponent {
     // Add the text
     doc.setFontSize(10);
 
-    const text = "Le Yacht Club de Six-Fours est une association type loi 1901 (SIRET : 37983153000017) située à l'adresse: Base nautique du Brusc - 104 corniche des îles 83140 Six-Fours\nCe document n'est pas un bon de commande, pour réaliser une inscription, merci de visiter notre site ycsixfours.com/les-activites/stages-de-voile/ et contacter le secrétariat (04 94 34 18 50 / ycsixfours@free.fr)";
+    const text = "Le Yacht Club de Six-Fours est une association type loi 1901 (SIRET : 37983153000017) située à l'adresse:\nBase nautique du Brusc - 104 corniche des îles 83140 Six-Fours\nCe document n'est pas un bon de commande, pour réaliser une inscription, merci de visiter notre site ycsixfours.com/les-activites/stages-de-voile/ et contacter le secrétariat (04 94 34 18 50 / ycsixfours@free.fr)";
     const maxWidth = 180; // adjust the width to fit the text in the PDF
     const lines = doc.splitTextToSize(text, maxWidth);
     const textY = doc.internal.pageSize.getHeight() * 0.9; // 10% from the bottom
