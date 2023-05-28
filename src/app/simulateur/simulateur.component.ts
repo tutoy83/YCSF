@@ -226,8 +226,8 @@ export class SimulateurComponent {
   sendEmail() {
     const email = (document.getElementById('mailDest') as HTMLInputElement).value;
     const subject = 'Devis stages';
-    let body = 'Bonjour,\n\nVous trouverez ci-dessous les informations demandees sur les stages:\n\n';
-    let inscriptionText = 'Pour realiser une inscription, merci de nous recontacter. \nCordialement, \n\n';
+    let body = 'Bonjour,\n\nVous trouverez ci-joint les informations demandees sur les stages.\n\n';
+    let inscriptionText = 'Pour realiser une inscription, vous pouvez remplir les documents sur notre site http://ycsixfours.com/les-activites/stages-de-voile/ et nous les transmettre par mail.\nNous restons évidemment à votre disposition pour toute question.\n\nCordialement, \n\n';
     let totalPrinted = '\n\nTOTAL = ' + this.total.toFixed(2) + ' euros\n'
     for (const stageDemande of this.stagesDemandesArr) {
       body += `- ${stageDemande.nom} ${stageDemande.remise}, soit ${stageDemande.prixRemise.toFixed(2)} euros\n`;
@@ -253,7 +253,6 @@ export class SimulateurComponent {
     doc.addImage('../../assets/YachtClub_v3.png', 'PNG', margin, 10, imgWidth, imgHeight);
 
     // Add the title
-    const imgProperties = doc.getImageProperties('../../assets/YachtClub_v3.png');
     const titleY = 60;
     doc.setFontSize(22);
     doc.text('Devis', doc.internal.pageSize.getWidth() / 2, titleY, { align: 'center' });
@@ -268,9 +267,8 @@ export class SimulateurComponent {
     // Add the client
     let clientY = 0;
     if(clientDest!==''){
-      clientY = detailsY + 20;
-      doc.text('Stagiaire : ' + clientDest , 15, clientY, { align: 'left' });
-
+      clientY = detailsY + 15;
+      doc.text('Stagiaire(s) : ' + clientDest , 15, clientY, { align: 'left' });
     }
 
     // Add the table
@@ -285,7 +283,7 @@ export class SimulateurComponent {
       data.push([option.nom, option.prixPublic.toFixed(2), '', option.prixPublic.toFixed(2)]);
     });
 
-    const startY = clientY + 10;
+    const startY = detailsY + 25;
 
     autoTable(doc, {
       headStyles: { fillColor: [46, 42, 91] },
@@ -298,20 +296,26 @@ export class SimulateurComponent {
 
     // Add the total
     doc.setFontSize(12);
-    const totalY = startY + (data.length + 1) * 10;
+    let totalY = startY + (data.length + 1) * 10;
+    if(totalY<20){
+      totalY = 20;
+    }
     doc.text('TOTAL = ' + this.total.toFixed(2) + ' €', 155, totalY);
 
     // Add the text
-    const text = "Ce document n'est pas un bon de commande, pour réaliser une inscription, merci de visiter notre site ycsixfours.com \nVous pouvez également nous contacter au 04 94 34 18 50 ou par mail ycsixfours@free.fr";
+    doc.setFontSize(10);
+
+    const text = "Le Yacht Club de Six-Fours est une association type loi 1901 (SIRET : 37983153000017) située à l'adresse: Base nautique du Brusc - 104 corniche des îles 83140 Six-Fours\nCe document n'est pas un bon de commande, pour réaliser une inscription, merci de visiter notre site ycsixfours.com/les-activites/stages-de-voile/ et contacter le secrétariat (04 94 34 18 50 / ycsixfours@free.fr)";
     const maxWidth = 180; // adjust the width to fit the text in the PDF
     const lines = doc.splitTextToSize(text, maxWidth);
-    const textY = totalY + 30;
+    const textY = doc.internal.pageSize.getHeight() * 0.9; // 10% from the bottom
     doc.text(lines, 15, textY);
 
     const now = new Date();
     const fileName = `recapitulatif_${now.toLocaleString('fr-FR', { timeZone: 'Europe/Paris', dateStyle: 'short', timeStyle: 'short' }).replace(/[/:\s]/g, '-')}.pdf`;
     doc.save(fileName);
   }
+
 
   genererExcel(): void {
     // Create a workbook
