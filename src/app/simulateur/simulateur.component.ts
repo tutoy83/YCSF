@@ -279,14 +279,12 @@ export class SimulateurComponent {
     document.execCommand('copy');
     document.body.removeChild(tempTextArea);
 
-    // Optionally, you can provide a visual feedback to the user after copying the text
-    alert('Texte copié ! ✔️');
 
   }
 
   copierMailConfirmation() {
     let body = 'Bonjour,\n\nNous accusons réception de vos dossiers d\'inscription et nous vous en remercions !';
-    let inscriptionText = ".\n\nN'hésitez pas à nous recontacter si besoin est !\n\nCordialement, \n\n";
+    let inscriptionText = "\n\nNous restons à votre disposition pour tout renseignement complémentaire.\n\nCordialement, \n\n";
 
     const emailText = body + inscriptionText;
     const tempTextArea = document.createElement('textarea');
@@ -296,8 +294,6 @@ export class SimulateurComponent {
     document.execCommand('copy');
     document.body.removeChild(tempTextArea);
 
-    // Optionally, you can provide a visual feedback to the user after copying the text
-    alert('Texte copié ! ✔️');
 
   }
 
