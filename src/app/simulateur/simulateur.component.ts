@@ -20,6 +20,7 @@ interface StageDemande {
 interface optionDemande {
   nom: string;
   prixPublic: number;
+  quantite:number;
 }
 
 @Component({
@@ -28,6 +29,9 @@ interface optionDemande {
   styleUrls: ['./simulateur.component.css']
 })
 export class SimulateurComponent {
+
+  prevQtePassport: number = 1;
+  prevQteCostisation: number = 1;
 
   stages: Stage[] = [
     { nom: 'Moussaillons', prix: 121 },
@@ -80,25 +84,40 @@ export class SimulateurComponent {
     }
   }
 
-  ajouterPassport():void{
-    const optionDemande: optionDemande = {
-      nom: "Passport Voile",
-      prixPublic: 12
-    };
+  ajouterPassport(): void {
+    const existingOption = this.optionsDemandesArr.find(option => option.nom === "Passport Voile");
 
-    this.optionsDemandesArr.push(optionDemande);
+    if (existingOption) {
+      existingOption.quantite++;
+    } else {
+      const optionDemande: optionDemande = {
+        nom: "Passport Voile",
+        prixPublic: 12,
+        quantite: 1
+      };
+      this.optionsDemandesArr.push(optionDemande);
+    }
+
     this.remiseCalc();
   }
 
-  ajouterCotis():void{
-    const optionDemande: optionDemande = {
-      nom: "Cotisation YCSF",
-      prixPublic: 19
-    };
+  ajouterCotis(): void {
+    const existingOption = this.optionsDemandesArr.find(option => option.nom === "Cotisation YCSF");
 
-    this.optionsDemandesArr.push(optionDemande);
+    if (existingOption) {
+      existingOption.quantite++;
+    } else {
+      const optionDemande: optionDemande = {
+        nom: "Cotisation YCSF",
+        prixPublic: 19,
+        quantite: 1
+      };
+      this.optionsDemandesArr.push(optionDemande);
+    }
+
     this.remiseCalc();
   }
+
 
   editStage(stage: any) {
     const newPrice = prompt('Prix (avec remise) à appliquer:', stage.prixRemise);
@@ -125,6 +144,18 @@ export class SimulateurComponent {
 
     this.totalCalc();
 
+  }
+
+  editQuantite(option: any) {
+    const newDiscount = prompt('Quantité: ', option.quantite);
+    if (newDiscount !== null) {
+      if(parseInt(newDiscount)>=0 &&  parseInt(newDiscount)<=50){
+        option.quantite = parseInt(newDiscount)
+        this.totalCalc();
+      }else{
+        alert("⚠️ Erreur: taper un entier entre 0 et 50");
+      }
+    }
   }
 
   remiseCalc(): number {
@@ -194,7 +225,7 @@ export class SimulateurComponent {
     return this.total;
   }
 
-  totalCalc(): any{
+  totalCalc(): number{
     this.total = 0;
     //GESTION STAGE
     for (let i = 0; i < this.stagesDemandesArr.length; i++) {
@@ -203,8 +234,11 @@ export class SimulateurComponent {
 
     //GESTION OPTION
     for (let i = 0; i < this.optionsDemandesArr.length; i++) {
-      this.total += this.optionsDemandesArr[i].prixPublic; // Ajoute le prixPublic de l'élément i à la variable total
+      this.total += this.optionsDemandesArr[i].prixPublic * this.optionsDemandesArr[i].quantite; // Ajoute le prixPublic de l'élément i à la variable total
     }
+
+    return this.total;
+
   }
 
   goodFinder(): void {
@@ -227,11 +261,47 @@ export class SimulateurComponent {
     const email = (document.getElementById('mailDest') as HTMLInputElement).value;
     const subject = 'Devis stages';
     let body = 'Bonjour,\n\nComme convenu, vous trouverez ci-joint les informations tarifaires sur les stages.\n\n';
-    let inscriptionText = 'Pour realiser une inscription, vous pouvez télécharger les documents accessibles sur notre site http://ycsixfours.com/les-activites/stages-de-voile/ et nous les transmettre par mail.\n\nNous restons évidemment à votre disposition pour toute question.\n\nCordialement, \n\n';
+    let inscriptionText = "Pour realiser une inscription, vous pouvez remplir les documents nécessaires et nous les transmettre par mail. Les fichiers PDF sont disponibles sur le site http://ycsixfours.com/  rubrique Les activites > Stages de voile.\n\nNous restons évidemment à votre disposition pour toute question.\n\nCordialement, \n\n";
 
     const mailtoLink = 'mailto:' + email + '?subject=' + subject + '&body=' + encodeURIComponent(body) + encodeURIComponent(inscriptionText);
     window.location.href = mailtoLink;
   }
+
+  copierMailDevis() {
+    let body = 'Bonjour,\n\nComme convenu, vous trouverez ci-joint les informations tarifaires sur les stages.\n\n';
+    let inscriptionText = "Pour réaliser une inscription, vous pouvez remplir les documents nécessaires et nous les transmettre par mail. Les fichiers PDF sont disponibles sur le site  ycsixfours.com  rubrique \"Les activités\" > \"Stages de voile\".\n\nNous restons évidemment à votre disposition pour toute question.\n\nCordialement, \n\n";
+
+    const emailText = body + inscriptionText;
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = emailText;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempTextArea);
+
+    // Optionally, you can provide a visual feedback to the user after copying the text
+    alert('Texte copié ! ✔️');
+
+  }
+
+  copierMailConfirmation() {
+    let body = 'Bonjour,\n\nNous accusons réception de vos dossiers d\'inscription et nous vous en remercions !';
+    let inscriptionText = ".\n\nN'hésitez pas à nous recontacter si besoin est !\n\nCordialement, \n\n";
+
+    const emailText = body + inscriptionText;
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = emailText;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempTextArea);
+
+    // Optionally, you can provide a visual feedback to the user after copying the text
+    alert('Texte copié ! ✔️');
+
+  }
+
+
 
   genererPDF(): void {
     const doc = new jsPDF();
@@ -272,7 +342,7 @@ export class SimulateurComponent {
     });
 
     this.optionsDemandesArr.forEach((option) => {
-      data.push([option.nom, option.prixPublic.toFixed(2), '', option.prixPublic.toFixed(2)]);
+      data.push([option.nom + ' x' + option.quantite, (option.prixPublic*option.quantite).toFixed(2), '', (option.prixPublic*option.quantite).toFixed(2)]);
     });
 
     const startY = detailsY + 25;
@@ -297,7 +367,7 @@ export class SimulateurComponent {
     // Add the text
     doc.setFontSize(10);
 
-    const text = "Le Yacht Club de Six-Fours est une association type loi 1901 (SIRET : 37983153000017) située à l'adresse:\nBase nautique du Brusc - 104 corniche des îles 83140 Six-Fours\nCe document n'est pas un bon de commande, pour réaliser une inscription, merci de visiter notre site ycsixfours.com/les-activites/stages-de-voile/ et contacter le secrétariat (04 94 34 18 50 / ycsixfours@free.fr)";
+    const text = "Le Yacht Club de Six-Fours est une association type loi 1901 (SIRET : 37983153000017)  située à l'adresse:\nBase nautique du Brusc - 104 corniche des îles 83140 Six-Fours\nCe document n'est pas un bon de commande, pour réaliser une inscription, merci de contacter le secrétariat au 04 94 34 18 50 / ycsixfours@free.fr";
     const maxWidth = 180; // adjust the width to fit the text in the PDF
     const lines = doc.splitTextToSize(text, maxWidth);
     const textY = doc.internal.pageSize.getHeight() * 0.9; // 10% from the bottom
